@@ -1,0 +1,8 @@
+runtime: aspnetcore
+env: flex
+service: api
+endpoints_api_service:
+  name: api-dot-rio-suave.appspot.com
+  rollout_strategy: managed
+readiness_check:
+  app_start_timeout_sec: 1000
