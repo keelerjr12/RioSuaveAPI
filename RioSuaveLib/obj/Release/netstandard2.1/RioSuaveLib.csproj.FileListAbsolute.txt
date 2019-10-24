@@ -1,8 +1,0 @@
-C:\Users\Joshua\source\repos\RioSuaveAPI\RioSuaveLib\bin\Release\netstandard2.1\RioSuaveLib.deps.json
-C:\Users\Joshua\source\repos\RioSuaveAPI\RioSuaveLib\bin\Release\netstandard2.1\RioSuaveLib.dll
-C:\Users\Joshua\source\repos\RioSuaveAPI\RioSuaveLib\bin\Release\netstandard2.1\RioSuaveLib.pdb
-C:\Users\Joshua\source\repos\RioSuaveAPI\RioSuaveLib\obj\Release\netstandard2.1\RioSuaveLib.csprojAssemblyReference.cache
-C:\Users\Joshua\source\repos\RioSuaveAPI\RioSuaveLib\obj\Release\netstandard2.1\RioSuaveLib.AssemblyInfoInputs.cache
-C:\Users\Joshua\source\repos\RioSuaveAPI\RioSuaveLib\obj\Release\netstandard2.1\RioSuaveLib.AssemblyInfo.cs
-C:\Users\Joshua\source\repos\RioSuaveAPI\RioSuaveLib\obj\Release\netstandard2.1\RioSuaveLib.dll
-C:\Users\Joshua\source\repos\RioSuaveAPI\RioSuaveLib\obj\Release\netstandard2.1\RioSuaveLib.pdb
