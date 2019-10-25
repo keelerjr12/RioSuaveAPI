@@ -1,0 +1,7 @@
+runtime: aspnetcore
+env: flex
+endpoints_api_service:
+  name: riosuaveapi.appspot.com
+  rollout_strategy: managed
+readiness_check:
+  app_start_timeout_sec: 1000
