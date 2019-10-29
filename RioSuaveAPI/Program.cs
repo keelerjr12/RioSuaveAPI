@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore;
+﻿using System;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using RioSuaveAPI.ProtectedJsonConfiguration;
@@ -19,8 +20,13 @@ namespace RioSuaveAPI
 
         private static void AddProtectedJsonConfiguration(WebHostBuilderContext context, IConfigurationBuilder builder)
         {
-            var configuration = builder.Build();
-            builder.AddProtectedJsonConfiguration();
+            // We add appsettings again (in addition to CreateDefaultBuilder) due to ordering
+            // Would be nice if we could avoid reading in multiple times -- consider using an encrypted DEV file?
+            // TODO: Add file input here instead of in the AddProtectedJsonConfiguration() method
+            builder.AddProtectedJsonConfiguration()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", optional: true,
+                    reloadOnChange: true);
         }
     }
 }

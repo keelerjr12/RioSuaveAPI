@@ -33,7 +33,7 @@ namespace RioSuaveAPI.Events
         [HttpPost]
         public void Post([FromBody]EventInput evtInput)
         {
-            _eventsService.CreateEvent(evtInput.Name, evtInput.DateTimeStart, evtInput.DateTimeEnd, evtInput.Description);
+            _eventsService.CreateEvent(evtInput.Name, evtInput.DateTimeStart, evtInput.DateTimeEnd, evtInput.Location, evtInput.Description);
         }
 
         // PUT api/<controller>/5
@@ -41,7 +41,7 @@ namespace RioSuaveAPI.Events
         [HttpPut("{id}")]
         public void Put(Guid id, [FromBody]EventInput evtInput)
         {
-            _eventsService.UpdateEvent(id, evtInput.Name, evtInput.DateTimeStart, evtInput.DateTimeEnd, evtInput.Description);
+            _eventsService.UpdateEvent(id, evtInput.Name, evtInput.DateTimeStart, evtInput.DateTimeEnd, evtInput.Location, evtInput.Description);
         }
 
         // DELETE api/<controller>/5

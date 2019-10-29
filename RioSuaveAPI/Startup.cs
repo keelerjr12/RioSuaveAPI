@@ -49,16 +49,16 @@ namespace RioSuaveAPI
                         RequireExpirationTime = true,
                         ValidateLifetime = true,
                         ValidateAudience = true,
-                        ValidAudience = Configuration["Audience"],
+                        ValidAudience = Configuration["JWT:Audience"],
                         ValidateIssuer = true,
-                        ValidIssuer = Configuration["Issuer"]
+                        ValidIssuer = Configuration["JWT:Issuer"]
                     };
                 });
 
             services.AddDbContext<RioSuaveContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("rioSuaveDbConnStr")));
             services.AddScoped<AuthService, AuthService>();
-            services.AddScoped(s => new JwtService(Configuration["Issuer"], Configuration["Audience"], _signingKey));
+            services.AddScoped(s => new JwtService(Configuration["JWT:Issuer"], Configuration["JWT:Audience"], _signingKey));
             services.AddScoped(s => new EmailService(Configuration["Host"], int.Parse(Configuration["Port"]), Configuration["Username"], Configuration["Password"]));
             services.AddScoped<EventsService, EventsService>();
         }

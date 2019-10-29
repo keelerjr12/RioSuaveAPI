@@ -14,7 +14,7 @@ namespace RioSuaveLib.Events
         public IEnumerable<EventDTO> GetAllEvents()
         {
             return _rsContext.Events.Select(e =>
-                new EventDTO {Id = e.Id, Name = e.Name, DateTimeStart = e.DateTimeStart, DateTimeEnd = e.DateTimeEnd, Description = e.Description}
+                new EventDTO {Id = e.Id, Name = e.Name, DateTimeStart = e.DateTimeStart, DateTimeEnd = e.DateTimeEnd, Location = e.Location, Description = e.Description}
             );
         }
 
@@ -28,13 +28,14 @@ namespace RioSuaveLib.Events
                 Name = evt.Name,
                 DateTimeStart = evt.DateTimeStart,
                 DateTimeEnd = evt.DateTimeEnd,
+                Location = evt.Location,
                 Description = evt.Description
             };
 
             return evtDTO;
         }
 
-        public void CreateEvent(string name, DateTime dateTimeStart, DateTime dateTimeEnd, string description)
+        public void CreateEvent(string name, DateTime dateTimeStart, DateTime dateTimeEnd, string location, string description)
         {
             _rsContext.Events?.Add(new Event
             {
@@ -42,18 +43,20 @@ namespace RioSuaveLib.Events
                 Name = name,
                 DateTimeStart = dateTimeStart,
                 DateTimeEnd = dateTimeEnd,
+                Location = location,
                 Description = description
             });
 
             _rsContext.SaveChanges();
         }
 
-        public void UpdateEvent(Guid id, string name, DateTime dateTimeStart, DateTime dateTimeEnd, string description)
+        public void UpdateEvent(Guid id, string name, DateTime dateTimeStart, DateTime dateTimeEnd, string location, string description)
         {
             var evt = FindById(id);
             evt.Name = name;
             evt.DateTimeStart = dateTimeStart;
             evt.DateTimeEnd = dateTimeEnd;
+            evt.Location = location;
             evt.Description = description;
 
             _rsContext.SaveChanges();

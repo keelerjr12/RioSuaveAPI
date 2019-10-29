@@ -12,6 +12,8 @@ namespace RioSuaveLib.Events
 
         public DateTime DateTimeEnd { get; set; }
 
+        public string Location { get; set; } = "";
+
         public string Description { get; set; } = "";
     }
 }
