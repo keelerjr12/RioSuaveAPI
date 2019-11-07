@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.EntityFrameworkCore;
 
 namespace RioSuaveLib
 {
@@ -11,9 +13,9 @@ namespace RioSuaveLib
             _rsContext = rsContext;
         }
 
-        public bool CanAuthenticate(string username, string password) 
+        public async Task<bool> CanAuthenticateAsync(string username, string password) 
         {
-            var user = _rsContext.Users.SingleOrDefault(u => u.Username == username);
+            var user = await _rsContext.Users.SingleOrDefaultAsync(u => u.Username == username);
             
             if (user?.Salt == null)
             {

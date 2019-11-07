@@ -5,5 +5,6 @@
     [DateTimeStart] DATETIME2 NOT NULL, 
     [DateTimeEnd] DATETIME2 NOT NULL, 
     [Location] VARCHAR(150) NOT NULL, 
-    [Description] VARCHAR(MAX) NOT NULL
+    [Description] VARCHAR(MAX) NOT NULL, 
+    [ImageUrl] VARCHAR(2048) NULL
 )

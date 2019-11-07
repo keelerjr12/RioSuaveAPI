@@ -1,17 +1,10 @@
 ﻿using System;
+using Microsoft.AspNetCore.Http;
 
 namespace RioSuaveAPI.Events
 {
     public class EventInput
     {
-        public string Name { get; set; } = "";
-
-        public DateTime DateTimeStart { get; set; }
-
-        public DateTime DateTimeEnd { get; set; }
-
-        public string Location { get; set; } = "";
-
-        public string Description { get; set; } = "";
+        public IFormFile Image { get; set; }
     }
 }

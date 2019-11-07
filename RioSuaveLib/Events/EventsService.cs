@@ -1,26 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
+using MailKit;
+using Microsoft.EntityFrameworkCore;
 
 namespace RioSuaveLib.Events
 {
     public class EventsService
     {
-        public EventsService(RioSuaveContext rsContext)
+        public EventsService(RioSuaveContext rsContext, ImageService imageService)
         {
             _rsContext = rsContext;
+            _imageService = imageService;
         }
 
-        public IEnumerable<EventDTO> GetAllEvents()
+        public async Task<IEnumerable<EventDTO>> GetAllEventsAsync()
         {
-            return _rsContext.Events.Select(e =>
-                new EventDTO {Id = e.Id, Name = e.Name, DateTimeStart = e.DateTimeStart, DateTimeEnd = e.DateTimeEnd, Location = e.Location, Description = e.Description}
-            );
+            return await _rsContext.Events.Select(e =>
+                new EventDTO
+                {
+                    Id = e.Id, 
+                    Name = e.Name, 
+                    DateTimeStart = e.DateTimeStart, 
+                    DateTimeEnd = e.DateTimeEnd, 
+                    Location = e.Location,
+                    Description = e.Description, 
+                    ImageUrl = e.ImageUrl
+                }
+            ).OrderBy(e => e.DateTimeStart).ThenBy(e => e.DateTimeEnd).ThenBy(e => e.Name).ToListAsync();
         }
 
-        public EventDTO? GetEventById(Guid id)
+        public async Task<EventDTO?> GetEventByIdAsync(Guid id)
         {
-            var evt = FindById(id);
+            var evt = await FindByIdAsync(id);
 
             var evtDTO = new EventDTO
             {
@@ -29,53 +43,74 @@ namespace RioSuaveLib.Events
                 DateTimeStart = evt.DateTimeStart,
                 DateTimeEnd = evt.DateTimeEnd,
                 Location = evt.Location,
-                Description = evt.Description
+                Description = evt.Description,
+                ImageUrl = evt.ImageUrl
             };
 
             return evtDTO;
         }
 
-        public void CreateEvent(string name, DateTime dateTimeStart, DateTime dateTimeEnd, string location, string description)
+        public async Task<Guid> CreateEventAsync(string name, DateTime dateTimeStart, DateTime dateTimeEnd, string location, string description, Image image)
         {
-            _rsContext.Events?.Add(new Event
+            var id = Guid.NewGuid();
+            var imgUrl = "";
+
+            if (image != null)
             {
-                Id = Guid.NewGuid(),
+                imgUrl = _imageService.SaveImage(id.ToString(), image);
+            }
+
+            var newEvent = new Event
+            {
+                Id = id,
                 Name = name,
                 DateTimeStart = dateTimeStart,
                 DateTimeEnd = dateTimeEnd,
                 Location = location,
-                Description = description
-            });
+                Description = description,
+                ImageUrl = imgUrl
+            };
 
-            _rsContext.SaveChanges();
+            if (_rsContext?.Events == null)
+                throw new NullReferenceException("Database context is null -- CreateEventAsync");
+
+            await _rsContext.Events.AddAsync(newEvent);
+            await _rsContext.SaveChangesAsync();
+
+            return newEvent.Id;
         }
 
-        public void UpdateEvent(Guid id, string name, DateTime dateTimeStart, DateTime dateTimeEnd, string location, string description)
+        public async Task UpdateEventAsync(Guid id, string name, DateTime dateTimeStart, DateTime dateTimeEnd, string location, string description)
         {
-            var evt = FindById(id);
+            var evt = await FindByIdAsync(id);
+
             evt.Name = name;
             evt.DateTimeStart = dateTimeStart;
             evt.DateTimeEnd = dateTimeEnd;
             evt.Location = location;
             evt.Description = description;
 
-            _rsContext.SaveChanges();
+            await _rsContext.SaveChangesAsync();
         }
 
-        public void DeleteEvent(Guid id)
+        public async Task DeleteEventAsync(Guid id)
         {
-            var evt = FindById(id);
+            var evt = await FindByIdAsync(id);
+
             _rsContext.Events?.Remove(evt);
+            await _rsContext.SaveChangesAsync();
 
-            _rsContext.SaveChanges();
+            if (evt.ImageUrl != null)
+                _imageService.DeleteImage(evt.ImageUrl);
         }
 
-        private Event FindById(Guid id)
+        private async Task<Event> FindByIdAsync(Guid id)
         {
-            return _rsContext.Events.SingleOrDefault(e => e.Id == id);
+            return await _rsContext.Events.SingleOrDefaultAsync(e => e.Id == id);
         }
-
 
         private readonly RioSuaveContext _rsContext;
+        private readonly ImageService _imageService
+            ;
     }
 }

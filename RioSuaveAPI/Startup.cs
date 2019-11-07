@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -17,10 +18,12 @@ namespace RioSuaveAPI
     public class Startup
     {
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment HostingEnv { get; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment hostingEnv)
         {
             Configuration = configuration;
+            HostingEnv = hostingEnv;
             _signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SigningKey"]));
         }
 
@@ -61,6 +64,7 @@ namespace RioSuaveAPI
             services.AddScoped(s => new JwtService(Configuration["JWT:Issuer"], Configuration["JWT:Audience"], _signingKey));
             services.AddScoped(s => new EmailService(Configuration["Host"], int.Parse(Configuration["Port"]), Configuration["Username"], Configuration["Password"]));
             services.AddScoped<EventsService, EventsService>();
+            services.AddScoped(s => new ImageService(HostingEnv.WebRootPath));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,6 +82,8 @@ namespace RioSuaveAPI
             app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthentication();
+
+            app.UseStaticFiles();
 
             app.UseHttpsRedirection();
             app.UseMvc();

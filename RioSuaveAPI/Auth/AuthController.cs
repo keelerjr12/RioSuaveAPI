@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RioSuaveLib;
 using RioSuaveLib.JWT;
@@ -16,9 +17,10 @@ namespace RioSuaveAPI.Auth
 
         // POST api/<controller>
         [HttpPost]
-        public ActionResult<JwtDTO> PostAsync([FromBody] LoginCredentials credentials)
+        public async Task<ActionResult<JwtDTO>> PostAsync([FromBody] LoginCredentials credentials)
         {
-            if (!_authService.CanAuthenticate(credentials.Username, credentials.Password))
+            var authenticated = await _authService.CanAuthenticateAsync(credentials.Username, credentials.Password);
+            if (!authenticated)
                 return Unauthorized();
 
             var jwt = _jwtService.Generate();
